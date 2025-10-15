@@ -29,8 +29,27 @@ Make a set of all known UMI
 
 
 ## High level functions:
+
 ```
-def position(column_4, column_6):
+def strand(column_2):
+
+    '''Given the bitwise FLAG (column 2) in the SAM file, I return if the strand is the positive(False) or negative (True)'''
+
+    #THIS IS POS/FOWARD STRAND
+    rev_comp = False
+
+    #THIS IS NEG/REVERSE STRAND
+    if ((flag & 16) == 16):
+        rev_comp = True
+
+    return(rev_comp)
+
+Input:
+Output:
+```
+
+```
+def position_pos(column_4, column_6):
 
     '''Given the the left most position (column 4 from SAM) and the CIGAR string (column 6 SAM), I account for soft clipping if presnet and return the 5' start of read'''
 
@@ -38,19 +57,35 @@ def position(column_4, column_6):
     soft_clip = 0
 
     for i in range(column_6):
-
-        #seeing where there is a soft clip:S AND if its not at the very end (don't care about soft clipping at the 3' end)
-
-        if column_6[i] == 'S' and column_6[i] != column_6[-1]:
-
+        #seeing where there is a soft clip 'S' AND if its not at the very end
+        if column_6[i] == "S" and column_6[i] != column_6[-1]:
             soft_clip = column_6[:i]
             
-    pos = column_4 + soft_clip
-    
-    return(pos)
+    5_start = column_4 - soft_clip
+
+    return(5_start)
+
+Input: 10, 5S136M4S
+Output: 5
 ```
 
-- Description
-- Function headers
-- Test examples (for individual functions)
-- Return statement
+```
+def position_neg(column_4, column_6):
+
+    '''Given the the left most position (column 4 from SAM) and the CIGAR string (column 6 SAM), I account for soft clipping if presnet and return the 5' start of read'''
+
+
+    soft_clip = 0
+
+    for i in range(column_6):
+        #seeing where there is a soft clip 'S' AND if its at the very end
+        if column_6[i] == "S" and column_6[i] == column_6[-1]:
+            soft_clip = column_6[:i]
+            
+    5_start = column_4 + soft_clip
+
+    return(5_start)
+
+Input: 10, 5S136M4S
+Output: 14
+```
