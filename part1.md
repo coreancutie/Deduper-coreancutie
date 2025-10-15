@@ -9,22 +9,75 @@ There can be PCR duplicates after the sequencing, quality checking, and alignmen
 ## pseudocode
 
 ```
-Sort the SAM file using Samtools sort (will sort using the leftmost coordinate of the alignment: column 4)
+Sort the SAM file using Samtools sort (will sort using the chromosome: column 3)
 
-Make a set of all known UMI
+---
 
-    Read the SAM file in
+Create an empty set for known UMI
 
-        Extract each line of the SAM file (readline)
+Read in the UMI txt file:
+
+    read each line in the file
+
+        strip the newline
+
+        add each line (UMI) to the set of known UMI's
+
+---
+
+initalizing chrom = 0
+initalizing empty dictionary = {}
+
+Open a file for writing the new SAM file:
+
+    Open the SAM file to read:
+
+        Extract each line of the SAM file (readline):
 
             Seperate the line by tab and strip the newline
 
-                Make a dictionary with the key as the column 1 (query name)
+            check if the line is a header: (if line[0][0] == "@")
 
-                Call the position function (to get the position accounting for the CIGAR string)
+                Write the header line to the new file
 
-                The values are a list: [strand, chromosome, position]
+            if the line is not a header: (else)
 
+                while the chromosome (column 3) is the same to the one initalized: 
+
+                    Make a dictionary with the key as the whole line
+                    The values are a list of [UMI, strand, position]
+
+                    Extract the UMI from the first column
+
+                    if UMI not in known UMI set:
+                        throw that read away and go to next line in SAM file
+                        continue
+
+                    elif UMI is in the known UMI set:
+                        add UMI to dictionary value list
+                            
+                        Call the strand function to determine if pos or neg strand
+                        Add strand (column 2) to the dictionary
+
+                        if pos(false):
+                            
+                            Call the pos position function to get the position accounting for the CIGAR string
+
+                            Add position to the dictionary
+
+                        elif neg(true):
+                            
+                            Call the neg position function to get the position accounting for the CIGAR string
+
+                            Add position to the dictionary
+                
+                Now outside of the while loop (completed getting all info for each chromosome)
+                Compare each dictionary value to the others
+                    once there is a pcr duplicate write the first entry to the file and move on to the next
+                
+                empty the dictionary (reinitalize an empty one)
+                chrom += 1 (incrementing the chromomosome)
+                
 ```
 
 
@@ -44,8 +97,8 @@ def strand(column_2):
 
     return(rev_comp)
 
-Input:
-Output:
+Input: 82
+Output: True
 ```
 
 ```
