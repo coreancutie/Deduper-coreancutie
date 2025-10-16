@@ -104,7 +104,7 @@ Output: True
 ```
 def position_pos(column_4, column_6):
 
-    '''Given the the left most position (column 4 from SAM) and the CIGAR string (column 6 SAM), I account for soft clipping if presnet and return the 5' start of read'''
+    '''Given the the left most position (column 4 from SAM) and the CIGAR string (column 6 SAM), I account for soft clipping if present and return the 5' start of read'''
 
 
     soft_clip = 0
@@ -125,8 +125,10 @@ Output: 5
 ```
 def position_neg(column_4, column_6):
 
-    '''Given the the left most position (column 4 from SAM) and the CIGAR string (column 6 SAM), I account for soft clipping if presnet and return the 5' start of read'''
+    '''Given the the left most position (column 4 from SAM) and the CIGAR string (column 6 SAM), account for soft clipping if present and since it is a reverse strand I  and return the 5' start of read'''
 
+
+    Find the M, D, and N, and add all of those values to column_4
 
     soft_clip = 0
 
@@ -139,6 +141,6 @@ def position_neg(column_4, column_6):
 
     return(5_start)
 
-Input: 10, 5S136M4S
-Output: 14
+Input: 10, 5S155M5S
+Output: 170
 ```
