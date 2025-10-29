@@ -1,12 +1,19 @@
 ## Define the problem
 
-There can be PCR duplicates after the sequencing, quality checking, and alignment of a sample. We want to remove these duplicates present in the SAM file after the alignment step, but we have to check a lot of different parameters before we can call something a PCR duplicate. We must ensure that the strands have the same alignment position: the same chromosome, the same 5' or left-most position (this includes accounting for soft clipping), and are the same strand (not a reverse complment of each other). Along with same alignment position, we must check if the strands have the same unique molecular identifer (UMI). In this case, I will only be accounting for single-end read, not pair-end reads. 
+There can be a phenominom called a PCR duplicates which is something that can occur after the sequencing, quality checking, and alignment of a sample. These duplicates are present in a SAM or BAM file. Before moving on with the data, it is recomended to remove these duplicates present in the file specifically after the alignment step. In order to remove a PCR duplicate, several parameters need to be checked in order to identify a proper PCR duplicate. These parameters are:
 
-## Write examples:
+1. We must ensure that the reads have the same strand (neg or pos).
+2. The reads are on the same chromosome. 
+3. The reads have the same 5' start position or left-most position (this includes accounting for soft clipping). 
+4. The reads have the same known unique molecular identifer (UMI). 
+git
+In this code, single-end read is all that is acocunted for. Pair-end reads will not work on this algorithum.
+
+## Write test files for an example:
     - Include a properly formated sorted input sam file
     - Include a properly formated expected output sam file
 
-## pseudocode
+## Write pseudocode:
 
 ```
 Sort the SAM file using Samtools sort (will sort using the chromosome: column 3)
