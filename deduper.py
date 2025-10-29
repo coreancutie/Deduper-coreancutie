@@ -5,26 +5,26 @@ import argparse
 def get_args():
 	'''this has 1 arguement: sam file'''
 	parser = argparse.ArgumentParser(description="Getting")
+	parser.add_argument("-u", help="The absolute path to the file containing the list of UMIs", type=str, required=True)
 	parser.add_argument("-f", help="The absolute path to the sorted sam file", type=str, required=True)
 	parser.add_argument("-o", help="The absolute path to the sorted sam file", type=str, required=True)
-	parser.add_argument("-u", help="The absolute path to the file containing the list of UMIs", type=str, required=True)
 	return parser.parse_args()
 
 #calling the function (so in the terminal it runs)
 args=get_args()
 
 #reassiging args.sam filename as f
+u:str = args.u
+#reassiging args.sam filename as f
 f:str = args.f
 #reassiging args.output filename as o
 o:str = args.o 
-#reassiging args.sam filename as f
-u:str = args.u
 
 #importing regular expression (regex)
 import re
 
 #creating an empty set to store all UMI records
-UMI:set = set()
+known_UMIs:set = set()
 
 #opening the UMI file to read
 with open(u, "r") as umi_file:
@@ -33,71 +33,7 @@ with open(u, "r") as umi_file:
         #stripping the line of newline
         line = line.strip("\n")
         #adding the UMI string to the set
-        UMI.add(line)
-
-
-#assigning the chromosome to 1 initally (in a sorted SAM it should be 1 first.... right?)
-chromosome:int = 1
-
-#creating an empty set to store all reads (each read will be a tuple?, string? of the read items)
-read:set = set()
-
-#opening the input file to read
-with open(f, "r") as input:
-    #opening the output file to write
-    with open(o, "w") as output:
-        #for line in the input
-        for line in input:
-            #stripping the line of new line and splitting by tab
-            line = line.strip("\n").split("\t")
-
-            #checking if the line is a header
-            if line[0][0] == "@":
-                #writing the header line to the output file
-                output.write("\t".join(line))
-                #writing a new line because I can't merge it to the other write statement right now lol
-                output.write("\n")
-            #if the line is not a header
-            else:
-                # print(line[2])
-                while int(line[2]) == chromosome:
-                    print(line)
-                    break
-            #         Make a dictionary with the key as the whole line
-            #         The values are a list of [UMI, strand, position]
-
-            #         Extract the UMI from the first column
-
-            #         if UMI not in known UMI set:
-            #             throw that read away and go to next line in SAM file
-            #             continue
-
-            #         elif UMI is in the known UMI set:
-            #             add UMI to dictionary value list
-                            
-            #             Call the strand function to determine if pos or neg strand
-            #             Add strand (column 2) to the dictionary
-
-            #             if pos(false):
-                            
-            #                 Call the pos position function to get the position accounting for the CIGAR string
-
-            #                 Add position to the dictionary
-
-            #             elif neg(true):
-                            
-            #                 Call the neg position function to get the position accounting for the CIGAR string
-
-            #                 Add position to the dictionary
-                
-            #     Now outside of the while loop (completed getting all info for each chromosome)
-            #     Compare each dictionary value to the others
-            #         once there is a pcr duplicate write the first entry to the file and move on to the next
-                
-            #     empty the dictionary (reinitalize an empty one)
-            #     chrom += 1 (incrementing the chromomosome)
-
-
+        known_UMIs.add(line)
 
 def strand(bit_flag:int) -> bool:
 
@@ -158,3 +94,98 @@ def pos_5(LMP:int, CIGAR:str, strand:bool) -> int:
 
 # print(pos_5(10, '5S136M4S', False)) # should retrun 5
 # print(pos_5(10, "5S136M8I4S", True)) # this should return 150 
+
+
+#assigning the chromosome to nothing initally
+chromosome:str = ' '
+
+#creating an empty set to store all reads (each item in the set will be a tuple of the umi, strand, 5' start pos, and chromosome)
+read:set = set()
+
+#setting a counter for amount of header lines
+header_lines:int = 0
+#setting a counter for amount of unique reads
+unique_reads:int = 0
+#setting a counter for amount of wrong/invalid/unknown UMIs
+wrong_umi:int = 0
+#setting a counter for amount of PCR duplicates removed
+dup_removed:int = 0
+
+#opening the input file to read
+with open(f, "r") as input:
+    #opening the output file to write
+    with open(o, "w") as output:
+        #for line in the input
+        for line in input:
+            #stripping the line of new line and splitting by tab
+            line = line.strip("\n").split("\t")
+
+            #checking if the line is a header
+            if line[0][0] == "@":
+                #incrementing the header line count
+                header_lines += 1
+                #writing the header line to the output file
+                output.write("\t".join(line))
+                #writing a new line because I can't merge it to the other write statement right now lol
+                output.write("\n")
+            
+            #if the line is not a header
+            else:
+                
+                #if the chromosome line is what is set, then get all the calculations:
+                if line[2] == chromosome:
+
+                    #getting the UMI from the first column (header) it should be the last 8 characters
+                    umi = line[0][-8:]
+
+                    #if the umi is not a valid or known
+                    if umi not in known_UMIs:
+                        #incrementing the wrong umi counter
+                        wrong_umi += 1
+                        #since it is not a known umi I go onto the next line in the file
+                        continue
+
+                    #if the umi is valid or known
+                    elif umi in known_UMIs:
+
+                        #getting the strand 
+                        str = strand(int(line[1]))
+
+                        #getting the 5' start position
+                        start_pos = pos_5(int(line[3]), line[5], str)
+
+                        #adding the umi, strand, 5' start position, and chromosome to a tuple
+                        dup:tuple = (umi, str, start_pos, line[2])
+                    
+
+                        #if the information is not in read (it's not a PCR duplicate)
+                        if dup not in read:
+                            
+                            #writing the line to the output file
+                            output.write("\t".join(line))
+                            #writing a new line
+                            output.write("\n")
+                            #adding the information to the read to compare in the future
+                            read.add(dup)
+
+                        #if the information is in the read (its a PCR duplicate)
+                        elif dup in read:
+                            #incrementing the counter for duplcates removed
+                            dup_removed += 1
+                            continue
+                        
+                #if the chromosome in the line is not what is set:
+                elif line[2] != chromosome:
+                    #setting the chromosome to that value
+                    chromosome = line[2]
+
+                    #resetting the read sets
+                    read = set()
+                    
+
+print(f"The number of header lines: {header_lines}")
+print(f"The number of unique reads: {unique_reads}")
+print(f"The number of wrong UMI: {wrong_umi}")
+print(f"The number of PCR duplicates removed: {dup_removed}")
+
+
