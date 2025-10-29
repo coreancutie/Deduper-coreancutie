@@ -5,9 +5,9 @@ import argparse
 def get_args():
 	'''this has 1 arguement: sam file'''
 	parser = argparse.ArgumentParser(description="Getting")
-	parser.add_argument("-u", help="The absolute path to the file containing the list of UMIs", type=str, required=True)
-	parser.add_argument("-f", help="The absolute path to the sorted sam file", type=str, required=True)
-	parser.add_argument("-o", help="The absolute path to the sorted sam file", type=str, required=True)
+	parser.add_argument("-u", help="The absolute path to the file containing the list of UMIs", required=True)
+	parser.add_argument("-f", help="The absolute path to the sorted sam file", required=True)
+	parser.add_argument("-o", help="The absolute path to the sorted sam file", required=True)
 	return parser.parse_args()
 
 #calling the function (so in the terminal it runs)
@@ -131,10 +131,16 @@ with open(f, "r") as input:
             
             #if the line is not a header
             else:
-                
+                #if the chromosome in the line is not what is set:
+                if line[2] != chromosome:
+                    #setting the chromosome to that value
+                    chromosome = line[2]
+
+                    #resetting the read sets
+                    read = set()
+
                 #if the chromosome line is what is set, then get all the calculations:
                 if line[2] == chromosome:
-
                     #getting the UMI from the first column (header) it should be the last 8 characters
                     umi = line[0][-8:]
 
@@ -174,13 +180,7 @@ with open(f, "r") as input:
                             dup_removed += 1
                             continue
                         
-                #if the chromosome in the line is not what is set:
-                elif line[2] != chromosome:
-                    #setting the chromosome to that value
-                    chromosome = line[2]
-
-                    #resetting the read sets
-                    read = set()
+                
                     
 
 print(f"The number of header lines: {header_lines}")
