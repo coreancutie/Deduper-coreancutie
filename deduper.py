@@ -166,7 +166,8 @@ with open(f, "r") as input:
 
                         #if the information is not in read (it's not a PCR duplicate)
                         if dup not in read:
-                            
+                            #incrementing the unique read counts
+                            unique_reads += 1
                             #writing the line to the output file
                             output.write("\t".join(line))
                             #writing a new line
@@ -180,9 +181,7 @@ with open(f, "r") as input:
                             dup_removed += 1
                             continue
                         
-                
-                    
-
+#printing out the values
 print(f"The number of header lines: {header_lines}")
 print(f"The number of unique reads: {unique_reads}")
 print(f"The number of wrong UMI: {wrong_umi}")
