@@ -110,6 +110,10 @@ unique_reads:int = 0
 wrong_umi:int = 0
 #setting a counter for amount of PCR duplicates removed
 dup_removed:int = 0
+#setting a dictionary to count the amount of reads per chromosome
+num_per_chrom:dict = {}
+#setting a variable to count the amount of reads per chromosome
+num_in_chrom:int = 0
 
 #opening the input file to read
 with open(f, "r") as input:
@@ -136,6 +140,12 @@ with open(f, "r") as input:
                     #setting the chromosome to that value
                     chromosome = line[2]
 
+                    #creating a dictionary with the chromosome number as the key
+                    #and the number of reads in that chromosome as the value
+                    num_per_chrom[chromosome] = num_in_chrom
+
+                    #resetting the chromosome count
+                    num_in_chrom = 0
                     #resetting the read sets
                     read = set()
 
@@ -168,6 +178,8 @@ with open(f, "r") as input:
                         if dup not in read:
                             #incrementing the unique read counts
                             unique_reads += 1
+                            #incrementing the number of read in that chromosome counter
+                            num_in_chrom += 1
                             #writing the line to the output file
                             output.write("\t".join(line))
                             #writing a new line
@@ -187,4 +199,7 @@ print(f"The number of unique reads: {unique_reads}")
 print(f"The number of wrong UMI: {wrong_umi}")
 print(f"The number of PCR duplicates removed: {dup_removed}")
 
-
+#writing out a file for all of the chromosome and their counts
+with open(f"num_per_chrom{o}", "w") as out_file:
+    for key, value, in num_per_chrom.items():
+        out_file.write(f"{key}\t{value}\n")
