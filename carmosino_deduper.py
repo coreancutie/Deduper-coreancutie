@@ -137,12 +137,12 @@ with open(f, "r") as input:
             else:
                 #if the chromosome in the line is not what is set:
                 if line[2] != chromosome:
-                    #setting the chromosome to that value
-                    chromosome = line[2]
-
                     #creating a dictionary with the chromosome number as the key
                     #and the number of reads in that chromosome as the value
                     num_per_chrom[chromosome] = num_in_chrom
+
+                    #setting the chromosome to that value
+                    chromosome = line[2]
 
                     #resetting the chromosome count
                     num_in_chrom = 0
@@ -200,6 +200,6 @@ print(f"The number of wrong UMI: {wrong_umi}")
 print(f"The number of PCR duplicates removed: {dup_removed}")
 
 #writing out a file for all of the chromosome and their counts
-with open(f"num_per_chrom{o}", "w") as out_file:
+with open(f"num_per_chrom.tsv", "w") as out_file:
     for key, value, in num_per_chrom.items():
         out_file.write(f"{key}\t{value}\n")
