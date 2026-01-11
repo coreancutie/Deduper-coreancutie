@@ -192,7 +192,11 @@ with open(f, "r") as input:
                             #incrementing the counter for duplcates removed
                             dup_removed += 1
                             continue
-                        
+        #This is to get the last chromosome values saved in the dictionary
+        # #last line is blank and never goes into `if line[2] != chromosome:`             
+        num_per_chrom[chromosome] = num_in_chrom
+
+
 #printing out the values
 print(f"The number of header lines: {header_lines}")
 print(f"The number of unique reads: {unique_reads}")
