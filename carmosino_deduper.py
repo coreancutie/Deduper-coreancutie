@@ -3,12 +3,18 @@
 #need this import to use argparse variables
 import argparse
 def get_args():
-	'''this has 1 arguement: sam file'''
-	parser = argparse.ArgumentParser(description="Getting")
-	parser.add_argument("-u", help="The absolute path to the file containing the list of UMIs", required=True)
-	parser.add_argument("-f", help="The absolute path to the sorted sam file", required=True)
-	parser.add_argument("-o", help="The absolute path to the sorted sam file", required=True)
-	return parser.parse_args()
+    '''this is the arguments that will be parsed in for the python script'''
+    parser = argparse.ArgumentParser(description="Getting the input and output arguments for the PCR deduplcation script")
+    
+    #all of the required arguments
+    parser.add_argument("-u", help="The absolute path to the file (txt) containing the list of UMIs", required=True)
+    parser.add_argument("-f", help="The absolute path to the input file (a sorted sam by the chromosome)", required=True)
+    parser.add_argument("-o", help="The absolute path to the output file (a sam file with a single copy of each read)", required=True)
+    
+    #all of the optional arguments
+    parser.add_argument("-t", help="The file name of the optional output file (tsv) with the number of lines per chromosome", required=False)
+    parser.add_argument("-s", help="The file name of the optional output file (txt) with file statistics", required=False)
+    return parser.parse_args()
 
 #calling the function (so in the terminal it runs)
 args=get_args()
@@ -197,13 +203,21 @@ with open(f, "r") as input:
         num_per_chrom[chromosome] = num_in_chrom
 
 
-#printing out the values
-print(f"The number of header lines: {header_lines}")
-print(f"The number of unique reads: {unique_reads}")
-print(f"The number of wrong UMI: {wrong_umi}")
-print(f"The number of PCR duplicates removed: {dup_removed}")
+#if given a tsv output file name
+if args.t:
+    #writing out a file for all of the chromosome and their counts
+    with open(f"{args.t}.tsv", "w") as tsv_file:
+        for key, value, in num_per_chrom.items():
+            tsv_file.write(f"{key}\t{value}\n")
 
-#writing out a file for all of the chromosome and their counts
-with open(f"num_per_chrom.tsv", "w") as out_file:
-    for key, value, in num_per_chrom.items():
-        out_file.write(f"{key}\t{value}\n")
+
+#if given a txt output file name
+if args.s:
+    with open(f"{args.s}.txt", "w") as txt_file:
+        #writing out the statistics
+        txt_file.write(f"The number of header lines: {header_lines}\n")
+        txt_file.write(f"The number of header lines: {header_lines}\n")
+        txt_file.write(f"The number of unique reads: {unique_reads}\n")
+        txt_file.write(f"The number of wrong UMI: {wrong_umi}\n")
+        txt_file.write(f"The number of PCR duplicates removed: {dup_removed}")
+
