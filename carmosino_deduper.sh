@@ -13,4 +13,6 @@
 #calling the function
 /usr/bin/time -v ./carmosino_deduper.py -u /projects/bgmp/catcar/bioinfo/Bi624/Deduper-coreancutie/STL96.txt \
 -f /projects/bgmp/catcar/bioinfo/Bi624/Deduper-coreancutie/sam_files/C1_SE_uniqAlign.sorted.sam  \
--o /projects/bgmp/catcar/bioinfo/Bi624/Deduper-coreancutie/test/C1_SE_uniqAlign_output.sorted.sam 
+-o /projects/bgmp/catcar/bioinfo/Bi624/Deduper-coreancutie/test/C1_SE_uniqAlign_output.sorted.sam \
+-t num_per_chrom \
+-s statistics
