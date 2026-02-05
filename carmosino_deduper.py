@@ -56,7 +56,7 @@ def strand(bit_flag:int) -> bool:
 
 def pos_5(lmp:int, cigar:str, strand:bool) -> int:
 
-    '''Given the the left most position (column 4 from SAM) and the 
+    '''Given the the left most position (lmp) (column 4 from SAM) and the 
     CIGAR string (column 6 SAM), and the strand (column 2) (False for pos) (True for neg),
     I account for soft clipping if present and return the 5' start of read'''
 
@@ -129,10 +129,8 @@ with open(f, "r") as input:
             if line[0][0] == "@":
                 #incrementing the header line count
                 header_lines += 1
-                #writing the header line to the output file
-                output.write("\t".join(line))
-                #writing a new line because I can't merge it to the other write statement right now lol
-                output.write("\n")
+                #writing the header line to the output file and a new line
+                output.write("\t".join(line) + '\n')
             
             #if the line is not a header
             else:
