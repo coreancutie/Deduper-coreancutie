@@ -1,0 +1,4 @@
+The number of header lines: 24
+The number of unique reads: 14
+The number of wrong UMI: 2
+The number of PCR duplicates removed: 3
