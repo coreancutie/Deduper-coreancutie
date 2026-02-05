@@ -201,7 +201,12 @@ if args.t:
     #writing out a file for all of the chromosome and their counts
     with open(f"{args.t}.tsv", "w") as tsv_file:
         for key, value, in num_per_chrom.items():
-            tsv_file.write(f"{key}\t{value}\n")
+            #if the key is empty (it was the placeholder) so continue
+            if key == '':
+                continue
+            #if the key is an actual chromosome value write it out
+            else:
+                tsv_file.write(f"{key}\t{value}\n")
 
 
 #if given a txt output file name
