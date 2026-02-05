@@ -54,7 +54,7 @@ def strand(bit_flag:int) -> bool:
 # print(strand(82)) #should return True (negative strand)
 
 
-def pos_5(LMP:int, CIGAR:str, strand:bool) -> int:
+def pos_5(lmp:int, cigar:str, strand:bool) -> int:
 
     '''Given the the left most position (column 4 from SAM) and the 
     CIGAR string (column 6 SAM), and the strand (column 2) (False for pos) (True for neg),
@@ -67,7 +67,7 @@ def pos_5(LMP:int, CIGAR:str, strand:bool) -> int:
 
     #finding the M, N, D, and S, in the CIGAR STRING
     #findall returns any match as list of each element EX: ['5S', '136M', '4S']
-    match = re.findall(r"[0-9]+[MNDS]+", CIGAR)
+    match = re.findall(r"[0-9]+[MNDS]+", cigar)
     
     #if true, if there is a match (there always should be...)
     if match:
@@ -84,11 +84,11 @@ def pos_5(LMP:int, CIGAR:str, strand:bool) -> int:
     #if true (neg strand)
     if strand:
         #adding all the CIGAR elements to the left most position to get the 5' start position
-        start_5 = LMP + shift_neg
+        start_5 = lmp + shift_neg
     #if not true (pos strand)
     elif not strand:
         #subtract the soft clipped element from the left most position to get the 5' start position
-        start_5 = LMP - shift_pos
+        start_5 = lmp - shift_pos
     
     #returning the 5' start position
     return(start_5)
