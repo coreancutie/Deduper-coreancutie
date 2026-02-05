@@ -153,15 +153,15 @@ with open(f, "r") as input:
                     #getting the UMI from the first column (header) it should be the last 8 characters
                     umi = line[0][-8:]
 
-                    #if the umi is not a valid or known
+                    #if the umi is NOT valid or known
                     if umi not in known_UMIs:
                         #incrementing the wrong umi counter
                         wrong_umi += 1
                         #since it is not a known umi I go onto the next line in the file
                         continue
 
-                    #if the umi is valid or known
-                    elif umi in known_UMIs:
+                    #if the umi IS valid or known `elif umi in known_UMIs`
+                    else:
 
                         #getting the strand 
                         str = strand(int(line[1]))
@@ -186,8 +186,8 @@ with open(f, "r") as input:
                             #adding the information to the read to compare in the future
                             read.add(dup)
 
-                        #if the information is in the read (its a PCR duplicate)
-                        elif dup in read:
+                        #if the information is in the read (its a PCR duplicate) `elif dup in read`
+                        else:
                             #incrementing the counter for duplcates removed
                             dup_removed += 1
                             continue
