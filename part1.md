@@ -1,19 +1,20 @@
 ## Define the problem
 
-There can be a phenominom called a PCR duplicates which is something that can occur after the sequencing, quality checking, and alignment of a sample. These duplicates are present in a SAM or BAM file. Before moving on with the data, it is recomended to remove these duplicates present in the file specifically after the alignment step. In order to remove a PCR duplicate, several parameters need to be checked in order to identify a proper PCR duplicate. These parameters are:
+There can be a phenominom called a PCR duplicates which is something that can occur after the sequencing, quality checking, and alignment steps of a sequencing sample. These duplicates are present in a SAM or BAM file. Before moving on with the data, it is recomended to remove the duplicates present in the file specifically after the alignment step. In order to remove a PCR duplicate, several parameters need to be checked in order to identify a proper PCR duplicate. These parameters are:
 
 1. We must ensure that the reads have the same strand (neg or pos).
 2. The reads are on the same chromosome. 
 3. The reads have the same 5' start position or left-most position (this includes accounting for soft clipping). 
 4. The reads have the same known unique molecular identifer (UMI). 
-git
+
 In this code, single-end read is all that is acocunted for. Pair-end reads will not work on this algorithum.
 
 ## Write test files for an example:
-    - Include a properly formated sorted input sam file
-    - Include a properly formated expected output sam file
+Include a properly formated sorted (by chromosome) [input sam file](test/test_input.sam)
 
-## Write pseudocode:
+Include a properly formated expected [output sam file](test/test_output.sam)
+
+## Pseudocode:
 
 ```
 Sort the SAM file using Samtools sort (will sort using the chromosome: column 3)
@@ -88,7 +89,7 @@ Open a file for writing the new SAM file:
 ```
 
 
-## High level functions:
+## High Level Functions:
 
 ```
 def strand(column_2):
