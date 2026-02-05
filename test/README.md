@@ -1,5 +1,10 @@
 # Deduper Test File
 
+This is the command used to test it (when the pwd is the top directory)
+
+    ./carmosino_deduper.py -u STL96.txt -f test/test_input.sam -o test/test_output.sam  -t num_per_chrom -s statistics
+
+
 ## Input File - SAM
 
 Line 25 & 26:
