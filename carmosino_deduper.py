@@ -98,7 +98,7 @@ def pos_5(LMP:int, CIGAR:str, strand:bool) -> int:
 
 
 #assigning the chromosome to nothing initally
-chromosome:str = ' '
+chromosome:str = ''
 
 #creating an empty set to store all reads (each item in the set will be a tuple of the umi, strand, 5' start pos, and chromosome)
 read:set = set()
