@@ -192,7 +192,7 @@ with open(f, "r") as input:
                             dup_removed += 1
                             continue
         #This is to get the last chromosome values saved in the dictionary
-        # #last line is blank and never goes into `if line[2] != chromosome:`             
+        #last line is blank and never goes into `if line[2] != chromosome:`             
         num_per_chrom[chromosome] = num_in_chrom
 
 
@@ -208,7 +208,6 @@ if args.t:
 if args.s:
     with open(f"{args.s}.txt", "w") as txt_file:
         #writing out the statistics
-        txt_file.write(f"The number of header lines: {header_lines}\n")
         txt_file.write(f"The number of header lines: {header_lines}\n")
         txt_file.write(f"The number of unique reads: {unique_reads}\n")
         txt_file.write(f"The number of wrong UMI: {wrong_umi}\n")
