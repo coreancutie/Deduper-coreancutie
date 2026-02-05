@@ -46,17 +46,12 @@ def strand(bit_flag:int) -> bool:
     '''Given the bitwise FLAG (column 2) in the SAM file, 
     this returns if the strand is the positive(False) or negative (True)'''
 
-    #THIS IS POS/FOWARD STRAND
-    rev_comp = False
+    #if statement is true then negative strand
+    #if statement is false then positive strand
+    return bit_flag & 16 == 16
 
-    #THIS IS NEG/REVERSE STRAND
-    if ((bit_flag & 16) == 16):
-        rev_comp = True
-
-    return(rev_comp)
-
-# print(strand(0))
-# print(strand(82))
+# print(strand(0)) #should return False (positive strand)
+# print(strand(82)) #should return True (negative strand)
 
 
 def pos_5(LMP:int, CIGAR:str, strand:bool) -> int:
@@ -98,8 +93,8 @@ def pos_5(LMP:int, CIGAR:str, strand:bool) -> int:
     #returning the 5' start position
     return(start_5)
 
-# print(pos_5(10, '5S136M4S', False)) # should retrun 5
-# print(pos_5(10, "5S136M8I4S", True)) # this should return 150 
+# print(pos_5(10, '5S136M4S', False)) #should retrun 5
+# print(pos_5(10, "5S136M8I4S", True)) #this should return 150 
 
 
 #assigning the chromosome to nothing initally
