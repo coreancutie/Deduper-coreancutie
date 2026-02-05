@@ -150,8 +150,10 @@ with open(f, "r") as input:
 
                 #if the chromosome line is what is set, then get all the calculations:
                 if line[2] == chromosome:
-                    #getting the UMI from the first column (header) it should be the last 8 characters
-                    umi = line[0][-8:]
+                    #splitting the first column (header) by :
+                    header:list = line[0].split(":")
+                    #getting the UMI from the header (it is the string after the last ":") 
+                    umi = header[-1]
 
                     #if the umi is NOT valid or known
                     if umi not in known_UMIs:
