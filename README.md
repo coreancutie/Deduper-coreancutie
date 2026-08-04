@@ -1,26 +1,26 @@
-# Deduper (PCR Deduplication)
+# Deduper: PCR Deduplication Script
 
-**Prompt:** Given a SAM file of uniquely mapped reads, and a text file containing the known UMIs, remove all PCR duplicates (retain only a single copy of each read). 
+**Overview:** Given a SAM file of uniquely mapped reads, and a text file containing the known UMIs, remove all PCR duplicates. The final file will retain only a single copy of each read. 
 
 The algorithm represented in this repository is deigned for for single-end data, with 96 unique UMIs. Any sequences are discarded if they have UMIs with errors (invalid or unknown). UMI information is the last section in the QNAME. In the example QNAME `NS500451:154:HWKTMBGXX:1:11101:15364:1139:GAACAGGT`, the UMI is `GAACAGGT`. 
 
 ## [Part 1](part1.md)
-Write up a strategy for writing a Reference Based PCR Duplicate Removal tool. That is, given a sorted sam file of uniquely mapped reads, remove all PCR duplicates (retain only a single copy of each read). Develop a strategy that avoids loading everything into memory. This includes:
-- Define the problem
-- Write examples:
-    - Include a properly formated sorted (by chromosome) [input sam file](test/test_input.sam)
-    - Include a properly formated expected [output sam file](test/test_output.sam)
-- Develop algorithm using pseudocode
-- Determine high level functions
+Writing a strategy for a Reference-Based PCR Duplicate Removal tool that avoids loading everything into memory. This includes:
+- Defining the problem
+- Writing examples:
+    - Properly formatted sorted (by chromosome) [input sam file](test/test_input.sam)
+    - Properly formatted expected [output sam file](test/test_output.sam)
+- Developing algorithm using pseudocode
+- Outlining high level functions
     - Description
     - Function headers
     - Test examples (for individual functions)
     - Return statement
 
 ## [Part 2](carmosino_deduper.py)
-Write the deduper function!
+Write the deduplication function.
 
-This Python code assumes a sorted sam file as the input. These are the sametools commands used to sort the SAM file before running it though the script (if given a SAM, convert to BAM, then sort as a BAM, finally convert to SAM). 
+This Python code assumes the input is a sorted sam file. These are the sametools commands used to sort the SAM file before supplying though the deduplication script. 
 
 - convert SAM to BAM
 
@@ -36,7 +36,7 @@ This Python code assumes a sorted sam file as the input. These are the sametools
 
 This algorithm accounts for:
 - All possible CIGAR strings (including adjusting for soft clipping)
-- Strand (positive ot negative)
+- Strand (positive or negative)
 - Single-end reads
 - Left most start position
 - Known UMIs
@@ -46,10 +46,12 @@ This algorithm:
 - Outputs the first read encountered if duplicates are found
 - Outputs a properly formatted SAM file
 
-## Part 3
 Considerations for future implementations:
 - Single-end vs paired-end input files
 - Known UMIs vs randomers
 - Error correction of known UMIs
-- Choice of duplicate written to file (first, random, highest quality score)
+- Choose which read to include/write in the final output:
+    - First read in the input file
+    - Choose a random read from the duplicates
+    - Keep the read with the highest quality score
 
